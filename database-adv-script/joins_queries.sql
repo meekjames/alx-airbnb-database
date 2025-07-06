@@ -23,7 +23,8 @@ SELECT
     r.comment,
     r.created_at AS review_date
 FROM Property p
-LEFT JOIN Review r ON p.property_id = r.property_id;
+LEFT JOIN Review r ON p.property_id = r.property_id
+ORDER BY p.property_id;
 
 SELECT 
     u.user_id,
