@@ -1,23 +1,16 @@
-SELECT 
-    u.user_id,
-    u.first_name,
-    u.last_name,
-    u.email,
-    COUNT(b.booking_id) AS total_bookings
-FROM User u
-LEFT JOIN Booking b ON u.user_id = b.user_id
-GROUP BY u.user_id, u.first_name, u.last_name, u.email
-ORDER BY total_bookings DESC;
+SELECT *
+FROM properties
+WHERE property_id IN (
+    SELECT property_id
+    FROM reviews
+    GROUP BY property_id
+    HAVING AVG(rating) > 4.0
+);
 
-SELECT 
-    p.property_id,
-    p.name,
-    p.location,
-    p.price_per_night,
-    COUNT(b.booking_id) AS total_bookings,
-    ROW_NUMBER() OVER (ORDER BY COUNT(b.booking_id) DESC) AS row_rank,
-    RANK() OVER (ORDER BY COUNT(b.booking_id) DESC) AS rank_position
-FROM Property p
-LEFT JOIN Booking b ON p.property_id = b.property_id
-GROUP BY p.property_id, p.name, p.location, p.price_per_night
-ORDER BY total_bookings DESC;
+SELECT u.user_id, u.first_name, u.last_name
+FROM users u
+WHERE (
+    SELECT COUNT(*)
+    FROM bookings b
+    WHERE b.user_id = u.user_id
+) > 3;
